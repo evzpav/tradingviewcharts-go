@@ -13,14 +13,11 @@ function App() {
     chart.current.applyOptions({ width: chartContainerRef.current.clientWidth });
   };
   
-
   useEffect(() => {
     let mounted = true;
     getData().then(res => {
         if(mounted) {
-          // setData(items)
           setCandles(res.candles)
-          console.log(res)
         }
       })
     return () => mounted = false;
@@ -28,6 +25,10 @@ function App() {
 
   
   useEffect(() => {
+    if (!candles || !candles.length) {
+      return
+    }
+
     chart.current = createChart(chartContainerRef.current, {
       width: chartContainerRef.current.clientWidth,
       height: 500,
@@ -50,7 +51,6 @@ function App() {
         borderColor: '#485c7b',
       },
       timeScale: {
-        timeVisible: true,
         borderColor: '#485c7b',
       },
     });
