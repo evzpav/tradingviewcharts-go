@@ -11,7 +11,7 @@ import (
 //go:embed trading-view-react/build
 var embeddedFiles embed.FS
 
-const defaultPort string = "9000"
+const defaultPort string = "9900"
 
 type Candle struct {
 	Symbol    string `json:"symbol"`

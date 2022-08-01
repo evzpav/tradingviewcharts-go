@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"embed-trading-view-go/charts"
+	"tradingviewcharts-go/charts"
 	"log"
 
 	binance "github.com/adshao/go-binance/v2"
