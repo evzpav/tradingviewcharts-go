@@ -11,17 +11,15 @@ import (
 //go:embed trading-view-react/build
 var embeddedFiles embed.FS
 
-const defaultPort string = "9900"
+const defaultPort string = "9901"
 
 type Candle struct {
-	Symbol    string `json:"symbol"`
-	Period    string `json:"period"`
-	Timestamp int64  `json:"time"`
-	Open      string `json:"open"`
-	High      string `json:"high"`
-	Low       string `json:"low"`
-	Close     string `json:"close"`
-	Volume    string `json:"volume"`
+	Time   int64  `json:"time"`
+	Open   string `json:"open"`
+	High   string `json:"high"`
+	Low    string `json:"low"`
+	Close  string `json:"close"`
+	Volume string `json:"volume"`
 }
 
 type chartServer struct {

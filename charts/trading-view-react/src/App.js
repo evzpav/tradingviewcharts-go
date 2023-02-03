@@ -10,20 +10,24 @@ function App() {
   const chart = useRef();
 
   const handleResize = () => {
-    chart.current.applyOptions({ width: chartContainerRef.current.clientWidth });
+    if (chart.current) {
+      chart.current.applyOptions({ width: chartContainerRef.current.clientWidth });
+    }
   };
-  
+
   useEffect(() => {
     let mounted = true;
     getData().then(res => {
-        if(mounted) {
-          setCandles(res.candles)
-        }
-      })
+      if (mounted) {
+        setCandles(res.data.candles)
+      }
+    }).catch(err => {
+      console.log(err)
+    })
     return () => mounted = false;
   }, [])
 
-  
+
   useEffect(() => {
     if (!candles || !candles.length) {
       return
@@ -51,6 +55,7 @@ function App() {
         borderColor: '#485c7b',
       },
       timeScale: {
+        timeVisible: true,
         borderColor: '#485c7b',
       },
     });
@@ -69,16 +74,16 @@ function App() {
     chart.current.timeScale().fitContent();
 
     const volumeSeries = chart.current.addHistogramSeries({
-       color: '#182233',
-       lineWidth: 2,
-       priceFormat: {
-         type: 'volume',
-       },
-       overlay: true,
-       scaleMargins: {
-         top: 0.8,
-         bottom: 0,
-       },
+      color: '#182233',
+      lineWidth: 2,
+      priceFormat: {
+        type: 'volume',
+      },
+      overlay: true,
+      scaleMargins: {
+        top: 0.8,
+        bottom: 0,
+      },
     });
 
     const volumeData = candles.map((c) => {
@@ -92,9 +97,11 @@ function App() {
     window.addEventListener('resize', handleResize);
 
     return () => {
-        window.removeEventListener('resize', handleResize);
+      window.removeEventListener('resize', handleResize);
 
+      if (chart && chart.current) {
         chart.current.remove();
+      }
     };
   }, []);
 

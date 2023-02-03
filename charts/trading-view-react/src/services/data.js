@@ -1,4 +1,8 @@
+
+import axios from "axios";
+
+const baseURL = 'http://localhost:9901';
+
 export function getData() {
-    return fetch('http://localhost:9900/data')
-      .then(data => data.json())
-  }
+  return axios.get(baseURL + "/data")
+}

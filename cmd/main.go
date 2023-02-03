@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"tradingviewcharts-go/charts"
 	"log"
+	"tradingviewcharts-go/charts"
 
 	binance "github.com/adshao/go-binance/v2"
 )
@@ -30,7 +30,7 @@ func getDailyCandlestickDataFromBinance() ([]*charts.Candle, error) {
 
 	klines, err := client.NewKlinesService().
 		Symbol("BTCUSDT").
-		Interval("1d").
+		Interval("1h").
 		Do(context.Background())
 	if err != nil {
 		return nil, err
@@ -38,12 +38,12 @@ func getDailyCandlestickDataFromBinance() ([]*charts.Candle, error) {
 	var candles []*charts.Candle
 	for _, k := range klines {
 		candles = append(candles, &charts.Candle{
-			Timestamp: k.OpenTime / 1000,
-			Open:      k.Open,
-			High:      k.High,
-			Low:       k.Low,
-			Close:     k.Close,
-			Volume:    k.Volume,
+			Time:   k.OpenTime / 1000,
+			Open:   k.Open,
+			High:   k.High,
+			Low:    k.Low,
+			Close:  k.Close,
+			Volume: k.Volume,
 		})
 	}
 
