@@ -14,12 +14,12 @@ func main() {
 
 	cs := charts.NewChartServer()
 
-	candles, err := getDailyCandlestickDataFromBinance()
+	respData, err := getDailyCandlestickDataFromBinance("BTCUSDT", "1h")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	cs.SetCandlestickData(candles)
+	cs.SetResponseData(respData)
 
 	if err := cs.Start(); err != nil {
 		log.Fatal(err.Error())
@@ -27,17 +27,18 @@ func main() {
 
 }
 
-func getDailyCandlestickDataFromBinance() ([]*charts.Candle, error) {
+func getDailyCandlestickDataFromBinance(symbol, interval string) (*charts.ResponseData, error) {
 	client := binance.NewClient("", "")
 
 	klines, err := client.NewKlinesService().
-		Symbol("BTCUSDT").
-		Interval("1h").
+		Symbol(symbol).
+		Interval(interval).
 		Do(context.Background())
 	if err != nil {
 		return nil, err
 	}
 	var candles []*charts.Candle
+
 	for _, k := range klines {
 
 		candles = append(candles, &charts.Candle{
@@ -50,7 +51,11 @@ func getDailyCandlestickDataFromBinance() ([]*charts.Candle, error) {
 		})
 	}
 
-	return candles, nil
+	return &charts.ResponseData{
+		Symbol:   symbol,
+		Interval: interval,
+		Candles:  candles,
+	}, nil
 }
 
 func round(v string) string {

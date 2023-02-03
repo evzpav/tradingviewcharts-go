@@ -4,8 +4,15 @@ import { createChart, CrosshairMode } from 'lightweight-charts';
 import { getData } from './services/data';
 
 function App() {
+  const greenColor = '#26a69a';
+  const redColor = '#ef5350';
+  // upColor: '#4bffb5',
+  // downColor: '#ff4976',
+
   const [candles, setCandles] = useState([]);
   const [legend, setLegend] = useState("");
+  const [symbol, setSymbol] = useState("");
+  const [interval, setInterval] = useState("");
 
   const chartContainerRef = useRef();
   const chart = useRef();
@@ -20,7 +27,9 @@ function App() {
     let mounted = true;
     getData().then(res => {
       if (mounted) {
-        setCandles(res.data.candles)
+        setCandles(res.data.candles);
+        setSymbol(res.data.symbol);
+        setInterval(res.data.interval);
       }
     }).catch(err => {
       console.log(err)
@@ -62,10 +71,10 @@ function App() {
     });
 
     const candleSeries = chart.current.addCandlestickSeries({
-      upColor: '#4bffb5',
-      downColor: '#ff4976',
-      borderDownColor: '#ff4976',
-      borderUpColor: '#4bffb5',
+      upColor: greenColor,
+      downColor: redColor,
+      borderDownColor: redColor,
+      borderUpColor: greenColor,
       wickDownColor: '#838ca1',
       wickUpColor: '#838ca1',
     });
@@ -76,12 +85,11 @@ function App() {
     chart.current.timeScale().fitContent();
 
     const volumeSeries = chart.current.addHistogramSeries({
-      color: '#182233',
       lineWidth: 2,
       priceFormat: {
         type: 'volume',
       },
-      overlay: true,
+      priceScaleId: "",
       scaleMargins: {
         top: 0.8,
         bottom: 0,
@@ -89,7 +97,8 @@ function App() {
     });
 
     const volumeData = candles.map((c) => {
-      return { "value": c.volume, "time": c.time }
+      const color = c.open < c.close ? greenColor : redColor;
+      return { "value": c.volume, "time": c.time, color }
     })
     volumeSeries.setData(volumeData);
 
@@ -121,11 +130,14 @@ function App() {
     <div className="app">
       <div ref={chartContainerRef} className="chart-container">
         <div className="legend">
-          O:<span className={setLegendNumberClass(legend)}>{legend.open}</span>&ensp;
-          H:<span className={setLegendNumberClass(legend)}>{legend.high}</span>&ensp;
-          L:<span className={setLegendNumberClass(legend)}>{legend.low}</span>&ensp;
-          C:<span className={setLegendNumberClass(legend)}>{legend.close}</span>&ensp;
-          V:<span className={setLegendNumberClass(legend)}>{legend.volume}</span>
+          <div className="symbol-interval">{symbol}&ensp;{interval}</div>
+          <div>
+            O:<span className={setLegendNumberClass(legend)}>{legend.open}</span>&ensp;
+            H:<span className={setLegendNumberClass(legend)}>{legend.high}</span>&ensp;
+            L:<span className={setLegendNumberClass(legend)}>{legend.low}</span>&ensp;
+            C:<span className={setLegendNumberClass(legend)}>{legend.close}</span>&ensp;
+            V:<span className={setLegendNumberClass(legend)}>{legend.volume}</span>
+          </div>
         </div>
       </div>
     </div >

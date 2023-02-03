@@ -22,9 +22,15 @@ type Candle struct {
 	Volume string `json:"volume"`
 }
 
+type ResponseData struct {
+	Symbol   string
+	Interval string
+	Candles  []*Candle
+}
+
 type chartServer struct {
-	port    string
-	candles []*Candle
+	port     string
+	respData *ResponseData
 }
 
 func NewChartServer() *chartServer {
@@ -33,8 +39,8 @@ func NewChartServer() *chartServer {
 	}
 }
 
-func (cs *chartServer) SetCandlestickData(candles []*Candle) {
-	cs.candles = candles
+func (cs *chartServer) SetResponseData(respData *ResponseData) {
+	cs.respData = respData
 }
 
 func (cs *chartServer) Start() error {
@@ -62,7 +68,9 @@ func (cs *chartServer) handleData(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "text/json")
 
 	err := json.NewEncoder(w).Encode(map[string]interface{}{
-		"candles": cs.candles,
+		"candles":  cs.respData.Candles,
+		"symbol":   cs.respData.Symbol,
+		"interval": cs.respData.Interval,
 	})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
