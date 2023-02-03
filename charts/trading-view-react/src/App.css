@@ -1,4 +1,4 @@
-.App {
+.app {
   text-align: center;
   margin: 0;
   height: 100%;
@@ -9,4 +9,24 @@
 
 .chart-container {
   flex: 1;
+}
+
+.red-number {
+  color: #ff4976;
+}
+
+.green-number {
+  color: #4bffb5;
+}
+
+.legend {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  z-index: 10;
+  font-size: 14px;
+  font-family: sans-serif;
+  line-height: 18px;
+  font-weight: 400;
+  color: white;
 }

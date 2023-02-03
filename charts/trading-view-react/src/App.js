@@ -5,6 +5,7 @@ import { getData } from './services/data';
 
 function App() {
   const [candles, setCandles] = useState([]);
+  const [legend, setLegend] = useState("");
 
   const chartContainerRef = useRef();
   const chart = useRef();
@@ -71,6 +72,7 @@ function App() {
 
     candleSeries.setData(candles);
 
+
     chart.current.timeScale().fitContent();
 
     const volumeSeries = chart.current.addHistogramSeries({
@@ -90,6 +92,16 @@ function App() {
       return { "value": c.volume, "time": c.time }
     })
     volumeSeries.setData(volumeData);
+
+    chart.current.subscribeCrosshairMove(param => {
+      if (param.time) {
+        const candleData = param.seriesPrices.get(candleSeries);
+        const volume = param.seriesPrices.get(volumeSeries);
+        candleData["volume"] = volume;
+        setLegend(candleData);
+      }
+    });
+
   }, [candles]);
 
   // Resize chart on container resizes.
@@ -106,10 +118,24 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <div ref={chartContainerRef} className="chart-container" />
-    </div>
+    <div className="app">
+      <div ref={chartContainerRef} className="chart-container">
+        <div className="legend">
+          O:<span className={setLegendNumberClass(legend)}>{legend.open}</span>&ensp;
+          H:<span className={setLegendNumberClass(legend)}>{legend.high}</span>&ensp;
+          L:<span className={setLegendNumberClass(legend)}>{legend.low}</span>&ensp;
+          C:<span className={setLegendNumberClass(legend)}>{legend.close}</span>&ensp;
+          V:<span className={setLegendNumberClass(legend)}>{legend.volume}</span>
+        </div>
+      </div>
+    </div >
   );
 }
+
+
+function setLegendNumberClass(legend) {
+  return legend.open < legend.close ? "green-number" : "red-number"
+}
+
 
 export default App;

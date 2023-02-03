@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"strconv"
 	"tradingviewcharts-go/charts"
 
 	binance "github.com/adshao/go-binance/v2"
@@ -37,15 +39,26 @@ func getDailyCandlestickDataFromBinance() ([]*charts.Candle, error) {
 	}
 	var candles []*charts.Candle
 	for _, k := range klines {
+
 		candles = append(candles, &charts.Candle{
 			Time:   k.OpenTime / 1000,
-			Open:   k.Open,
-			High:   k.High,
-			Low:    k.Low,
-			Close:  k.Close,
-			Volume: k.Volume,
+			Open:   round(k.Open),
+			High:   round(k.High),
+			Low:    round(k.Low),
+			Close:  round(k.Close),
+			Volume: round(k.Volume),
 		})
 	}
 
 	return candles, nil
+}
+
+func round(v string) string {
+	f, err := strconv.ParseFloat(v, 64)
+	if err != nil {
+		return "0"
+	}
+
+	return fmt.Sprintf("%.2f", f)
+
 }
