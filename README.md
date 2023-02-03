@@ -16,4 +16,4 @@ go run cmd/main.go
 # it grabs BTCUSDT 1h candlestick data from Binance
 # react app make srequest to http://localhost:9901/data and renders the chart
 ```
-[<img src="./tradingviewcharts-go.png" width="800"/>](./tradingviewcharts-go2.png)
+[<img src="./tradingviewcharts-go.png" width="800"/>](./tradingviewcharts-go.png)
